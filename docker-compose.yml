@@ -1,0 +1,21 @@
+services:
+  source:
+    build:
+      context: ./src/source/
+      args:
+        #works
+        # OTEL_VERSION: 0.49b2
+        # OTEL_VERSION_OTLP: 1.28.2
+        #broken
+        OTEL_VERSION: 0.50b0
+        OTEL_VERSION_OTLP: 1.29.0
+    environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://collector:4317"
+
+  collector:
+    image: otel/opentelemetry-collector
+    ports:
+      - "4317:4317"
+    volumes:
+      - ./src/collector/collector.yml:/etc/collector.yml
+    command: ["--config=/etc/collector.yml"]
